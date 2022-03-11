@@ -1,49 +1,43 @@
 # Models go here
-from ast import For
-from itertools import product
-from peewee import Model, SqliteDatabase, CharField, ManyToManyField, ForeignKeyField, IntegerField, DecimalField
+from peewee import Model, SqliteDatabase, CharField, ForeignKeyField, IntegerField, DecimalField
 
 
 db = SqliteDatabase('database.db', pragmas={'foreign_keys': 1})
 
-class User(Model):
-    name = CharField()
-    address = CharField()
-    
+
+class BaseModel(Model):
     class Meta:
         database = db
 
-class Product(Model):
-    name = CharField()    
+
+class User(BaseModel):
+    name = CharField()
+    address = CharField()
+
+
+class Product(BaseModel):
+    name = CharField()
     price_per_item = DecimalField(10, 2, auto_round=True)
     quantity = IntegerField()
     description = CharField()
-    seller = ForeignKeyField(User)
-    tags = ManyToManyField()
+    owner = ForeignKeyField(User, backref='products')
 
     class Meta:
-        database = db
+        indexes = (
+            (('name', 'price_per_item', 'quantity', 'description', 'owner'), True),
+        )
 
-class Tag(Model):
+
+class Tag(BaseModel):
     name = CharField()
 
-    class Meta:
-        database = db
 
-class ProductTag(Model):
-    tag = ForeignKeyField(Tag)
-    product = ForeignKeyField(Product)
+class ProductTag(BaseModel):
+    tag = ForeignKeyField(Tag, backref='products')
+    product = ForeignKeyField(Product, backref='tags')
 
-    class Meta:
-        database = db
 
-class Transaction(Model):
+class Transaction(BaseModel):
     product = ForeignKeyField(Product)
     quantity = IntegerField()
-    Buyer = ForeignKeyField(User)
-    Seller = ForeignKeyField(User)
-
-    class Meta:
-        database = db
-
-# cd .\OneDrive\Documenten\Winc_Academy\BED\Winc\betsy-webshop\
+    buyer = ForeignKeyField(User, backref='buys')

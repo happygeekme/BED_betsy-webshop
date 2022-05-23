@@ -29,15 +29,15 @@ class Product(BaseModel):
 
 
 class Tag(BaseModel):
-    name = CharField()
+    name = CharField(unique=True)
 
 
 class ProductTag(BaseModel):
-    tag = ForeignKeyField(Tag, backref='products')
-    product = ForeignKeyField(Product, backref='tags')
+    tag = ForeignKeyField(Tag, backref='producttags')
+    product = ForeignKeyField(Product, backref='producttags')
 
 
 class Transaction(BaseModel):
     product = ForeignKeyField(Product)
     quantity = IntegerField()
-    buyer = ForeignKeyField(User, backref='buys')
+    buyer = ForeignKeyField(User, backref='transactions')

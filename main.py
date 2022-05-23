@@ -27,8 +27,7 @@ def list_user_products(user_id):
                     f'Product: {product.name}, prijs per stuk: {product.price_per_item}, beschikbaarheid: {product.quantity}')
         else:
             print(f'{user.name} heeft geen producten beschikbaar')
-    except:
-        IndexError
+    except Exception:
         print('Gebruiker niet gevonden')
 
 
@@ -62,8 +61,7 @@ def update_stock(product_id, new_quantity):
         update.execute()
         print(
             f'De voorraad van het product {Product.get_by_id(product_id).name} is aangepast naar {new_quantity}')
-    except:
-        IndexError
+    except Exception:
         print('Dit product is niet beschikbaar, voer als nieuw product in')
 
 
@@ -85,8 +83,7 @@ def purchase_product(product_id, buyer_id, quantity):
         else:
             print(
                 f'Er zijn {old_quantity} stuks {product.name} beschikbaar, pas het aantal aan alstublieft')
-    except:
-        IndexError
+    except Exception:
         print('Dit product is niet beschikbaar')
 
 
@@ -96,6 +93,5 @@ def remove_product(product_id):
         product.delete_instance(recursive=True)
         print(f'{product.name} is verwijderd')
 
-    except:
-        IndexError
+    except Exception:
         print(f'Geen product beschikbaar met id {product_id}')
